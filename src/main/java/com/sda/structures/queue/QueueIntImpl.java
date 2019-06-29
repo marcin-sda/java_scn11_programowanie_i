@@ -11,7 +11,7 @@ public class QueueIntImpl implements QueueOfIntegers{
     }
 
     public int length() {
-        return mStart < mEnd ? mEnd - mStart : mTab.length - (mTab.length - mEnd + mStart);
+        return mStart <= mEnd ? mEnd - mStart : mStart - mEnd;
     }
 
     /**
@@ -22,6 +22,14 @@ public class QueueIntImpl implements QueueOfIntegers{
      */
     @Override
     public void enqueue(Integer data) {
+        if (length() == mTab.length) {
+            return;
+        }
+        if (mEnd == mTab.length) {
+            mEnd = 0;
+        }
+        mTab[mEnd] = data;
+        mEnd++;
     }
 
     /**
@@ -30,6 +38,15 @@ public class QueueIntImpl implements QueueOfIntegers{
      */
     @Override
     public void dequeue() {
+        if (length() != 0) {
+            mStart++;
+        }
+        if (mStart == mTab.length) {
+            mStart = 0;
+            if (mEnd == mTab.length) {
+                mEnd = 0;
+            }
+        }
     }
 
     /**
