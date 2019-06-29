@@ -18,6 +18,18 @@ public class QueueTest {
     }
 
     @Test
+    public void someTest() {
+        QueueOfIntegers queue = new QueueIntImpl(3);
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.dequeue();
+        queue.enqueue(3);
+        queue.dequeue();
+        queue.dequeue();
+        assertTrue(queue.isEmpty());
+    }
+
+    @Test
     public void testNewQueueIsEmpty() {
         QueueOfIntegers queue = new QueueIntImpl(10);
         assertNotNull(queue);
