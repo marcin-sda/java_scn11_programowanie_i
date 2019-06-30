@@ -23,7 +23,8 @@ public class SortTest {
         ArrayList<Integer> data = getRandomValues(15);
         Integer[] intArray = new Integer[data.size()];
         data.toArray(intArray);
-        System.out.println(Arrays.toString(sortAlgo.sort(intArray)));
+        System.out.println("original: " + data.toString());
+        System.out.println("sorted:   " + Arrays.toString(sortAlgo.sort(intArray)));
         for (int i = 0; i < intArray.length - 1; i++) {
             if (intArray[i] > intArray[i+1]) {
                 assertFalse(true);
