@@ -15,7 +15,9 @@ public interface BinaryTree <T extends Comparable<T>> {
      */
     enum TraversalMode {
         BFS,
-        DFS
+        DFS_INORDER,
+        DFS_PREORDER,
+        DFS_POSTORDER
     }
 
     /**

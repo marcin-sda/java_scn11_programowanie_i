@@ -71,7 +71,8 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
      */
     public void traverse(TraversalMode mode) {
         switch (mode) {
-            case DFS:
+            case DFS_INORDER:
+                recuTraverseDFSInOrder(mRoot);
                 break;
 
             case BFS:
@@ -81,4 +82,14 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
                 break;
         }
     }
+
+    private void recuTraverseDFSInOrder(TreeNode<T> root) {
+        if (root == null) {
+            return;
+        }
+        recuTraverseDFSInOrder(root.leftChild);
+        System.out.println(root.data);
+        recuTraverseDFSInOrder(root.rightChild);
+    }
+
 }
