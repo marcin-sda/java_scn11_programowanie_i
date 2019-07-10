@@ -1,7 +1,5 @@
 package com.sda.structures.queue;
 
-import com.sda.structures.queue.QueueIntImpl;
-import com.sda.structures.queue.QueueOfIntegers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,23 +8,30 @@ import static junit.framework.TestCase.*;
 public class QueueTest {
 
     private static final int QUEUE_SIZE = 10;
-    private QueueOfIntegers mQueue;
+    private Queue<Integer> mQueue;
 
     @Before
     public void setupQueue() {
-        mQueue = new QueueIntImpl(QUEUE_SIZE);
+        mQueue = new QueueImpl<>(QUEUE_SIZE);
     }
 
     @Test
     public void someTest() {
+        Integer value = -1;
         QueueOfIntegers queue = new QueueIntImpl(3);
         queue.enqueue(1);
         queue.enqueue(2);
         queue.dequeue();
         queue.enqueue(3);
+        queue.enqueue(4);
         queue.dequeue();
+        value = queue.peek();
         queue.dequeue();
+        value = queue.peek();
+        queue.dequeue();
+        value = queue.peek();
         assertTrue(queue.isEmpty());
+        queue.enqueue(99);
     }
 
     @Test
@@ -77,13 +82,13 @@ public class QueueTest {
         assertEquals(30, mQueue.peek().intValue());
     }
 
-    private void enqueueN(QueueOfIntegers queue, int n, int offset) {
+    private void enqueueN(Queue<Integer> queue, int n, int offset) {
         for (int i = 0; i < n; i++) {
             queue.enqueue(i+offset);
         }
     }
 
-    private void dequeueN(QueueOfIntegers queue, int n) {
+    private void dequeueN(Queue<Integer> queue, int n) {
         for (int i = 0; i < n; i++) {
             queue.dequeue();
         }

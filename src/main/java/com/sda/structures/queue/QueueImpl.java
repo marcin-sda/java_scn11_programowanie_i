@@ -4,14 +4,15 @@ public class QueueImpl <T> implements Queue<T> {
 
     T[] mTab;
     int mStart = 0;
-    int mEnd = 0;
+    int mEnd = -1;
+    private int mCounter = 0;
 
     public QueueImpl(int size) {
         mTab = (T[]) new Object[size];
     }
 
     public int length() {
-        return mStart < mEnd ? mEnd - mStart : mTab.length - (mTab.length - mEnd + mStart);
+        return mCounter;
     }
 
     /**
@@ -22,7 +23,15 @@ public class QueueImpl <T> implements Queue<T> {
      */
     @Override
     public void enqueue(T data) {
-
+        if (length() == mTab.length) {
+            return;
+        }
+        mEnd++;
+        mCounter++;
+        if (mEnd == mTab.length) {
+            mEnd = 0;
+        }
+        mTab[mEnd] = data;
     }
 
     /**
@@ -31,7 +40,16 @@ public class QueueImpl <T> implements Queue<T> {
      */
     @Override
     public void dequeue() {
-
+        if (length() > 0) {
+            mStart++;
+            mCounter--;
+        }
+        if (mStart == mTab.length) {
+            mStart = 0;
+            if (mEnd == mTab.length) {
+                mEnd = -1;
+            }
+        }
     }
 
     /**
@@ -42,7 +60,7 @@ public class QueueImpl <T> implements Queue<T> {
      */
     @Override
     public T peek() {
-        return mTab[mEnd];
+        return mTab[mStart];
     }
 
     /**
