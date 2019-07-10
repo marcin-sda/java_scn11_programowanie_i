@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SortTest {
 
-    Sort sortAlgo;
+    Sort sortAlgo = new BubbleSort();
 
     @Before
     public void setup() {
