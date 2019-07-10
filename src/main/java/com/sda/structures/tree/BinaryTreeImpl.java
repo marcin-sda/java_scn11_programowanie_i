@@ -1,8 +1,6 @@
 package com.sda.structures.tree;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Queue;
 
 public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> {
@@ -37,6 +35,8 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
                     } else {
                         current = current.leftChild;
                     }
+                } else {
+                    break;
                 }
             }
         }
@@ -50,6 +50,7 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
      * @return true if successfully removed (prawda jeśli udało się usunąć)
      */
     public boolean remove(T element) {
+        return remove(element, mRoot);
     }
 
     /**
@@ -60,7 +61,7 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
      * @return true if element was found (prawda jeśli znaleziono element)
      */
     public boolean find(T element) {
-        return false;
+        return recuSearch(mRoot, element) != null;
     }
 
     /**
@@ -75,7 +76,16 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
                 recuTraverseDFSInOrder(mRoot);
                 break;
 
+            case DFS_PREORDER:
+                recuTraverseDFSPreOrder(mRoot);
+                break;
+
+            case DFS_POSTORDER:
+                recuTraverseDFSPostOrder(mRoot);
+                break;
+
             case BFS:
+                traverseBFS(mRoot);
                 break;
 
                 default:
@@ -83,6 +93,88 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
         }
     }
 
+    private boolean remove(T element, TreeNode<T> root) {
+        // search for node to remove and its parent
+        TreeNode<T> parent = root;
+        TreeNode<T> current = root;
+        int comparison = current.data.compareTo(element);
+        while (comparison != 0) {
+            parent = current;
+            if (comparison > 0){
+                current = current.leftChild;
+            } else {
+                current = current.rightChild;
+            }
+            if (current == null){
+                return false;
+            }
+            comparison = current.data.compareTo(element);
+        }
+        //case 1: node to be deleted is a leaf
+        if (current.leftChild == null && current.rightChild == null) {
+            if (current == mRoot) {
+                mRoot = null;
+            }
+            else if(parent.leftChild == current) {
+                parent.leftChild = null;
+            } else {
+                parent.rightChild = null;
+            }
+        }
+        //case 2: if node to be deleted has only one child
+        //there is only left child
+        else if (current.rightChild == null) {
+            if (current == mRoot) {
+                mRoot = current.leftChild;
+            } else if (parent.leftChild == current) {
+                parent.leftChild = current.leftChild;
+            } else {
+                parent.rightChild = current.leftChild;
+            }
+        }
+        //there is only right child
+        else if (current.leftChild == null) {
+            if(current == mRoot) {
+                mRoot = current.rightChild;
+            } else if (parent.leftChild == current) {
+                parent.leftChild = current.rightChild;
+            } else {
+                parent.rightChild = current.rightChild;
+            }
+        }
+        // case 3: node to be deleted has both children
+        else if (current.leftChild != null && current.rightChild != null) {
+            //Find node with smallest value (successor) in right sub-tree
+            //of node that is going to be deleted.
+            TreeNode<T> minNode = findMinNode(current.rightChild);
+            //Copy value from successor to node we are deleting.
+            current.data = minNode.data;
+            //Remove findMinNode since it contains duplicate value.
+            if (current.rightChild == minNode) {
+                current.rightChild = minNode.rightChild;
+            } else {
+                remove(minNode.data, current.rightChild);
+            }
+        }
+        return true;
+    }
+
+    //Recursively search for a node with given value, starting from given node.
+    private TreeNode<T> recuSearch(TreeNode<T> node, T element) {
+         if (node == null) {
+             return null;
+         }
+         int comparison = node.data.compareTo(element);
+         if (comparison == 0) {
+             return node;
+         } else if (comparison < 0) {
+             return recuSearch(node.rightChild, element);
+         } else {
+             return recuSearch(node.leftChild, element);
+         }
+    }
+
+    //Recursively traverse tree in depth-first manner (in-order).
     private void recuTraverseDFSInOrder(TreeNode<T> root) {
         if (root == null) {
             return;
@@ -92,4 +184,50 @@ public class BinaryTreeImpl <T extends Comparable<T>> implements BinaryTree <T> 
         recuTraverseDFSInOrder(root.rightChild);
     }
 
+    //Recursively traverse tree in depth-first manner (pre-order).
+    private void recuTraverseDFSPreOrder(TreeNode<T> root) {
+        if (root == null) {
+            return;
+        }
+        System.out.println(root.data);
+        recuTraverseDFSPreOrder(root.leftChild);
+        recuTraverseDFSPreOrder(root.rightChild);
+    }
+
+    //Recursively traverse tree in depth-first manner (post-order).
+    private void recuTraverseDFSPostOrder(TreeNode<T> root) {
+        if (root == null) {
+            return;
+        }
+        recuTraverseDFSPreOrder(root.leftChild);
+        recuTraverseDFSPreOrder(root.rightChild);
+        System.out.println(root.data);
+    }
+
+    //Traverse tree in breadth-first search manner.
+    private void traverseBFS(TreeNode<T> root) {
+        if (root == null) {
+            return;
+        }
+        Queue<TreeNode<T>> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            final TreeNode<T> current = queue.poll();
+            System.out.println(current.data.toString() + " ");
+            if (current.leftChild != null) {
+                queue.offer(current.leftChild);
+            }
+            if (current.rightChild != null) {
+                queue.offer(current.rightChild);
+            }
+        }
+    }
+
+    //Finds minimum starting from given parent.
+    private TreeNode<T> findMinNode(TreeNode<T> parent) {
+        if (parent.leftChild == null) {
+            return parent;
+        }
+        return findMinNode(parent.leftChild);
+    }
 }
